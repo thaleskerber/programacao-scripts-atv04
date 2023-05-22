@@ -9,7 +9,7 @@ class MatchesController {
     const { limit, offset } = req.body
 
     try{
-      const matches: any[] = await AppDataSource.getRepository(Matches).find({ skip: offset, take: limit, order: { date: 'DESC' } })
+      const matches: any[] = await AppDataSource.getRepository(Matches).find({ skip: offset, take: limit, order: { date: 'DESC' }, relations: { host: true, visitor: true } })
 
       return res.status(200).json(matches)
     }catch(e){
@@ -22,7 +22,7 @@ class MatchesController {
 
     try{
       const idAsNumber: number = parseInt(id)
-      const matches = await AppDataSource.getRepository(Matches).find({ where: { host: { id: idAsNumber }, visitor: { id: idAsNumber} }, order: { date: 'DESC' } })
+      const matches = await AppDataSource.getRepository(Matches).find({ where: [ { host: { id: idAsNumber } }, { visitor: { id: idAsNumber} } ], order: { date: 'DESC' }, relations: { host: true, visitor: true} })
 
       return res.status(200).json(matches)
     }catch(e){
